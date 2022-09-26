@@ -1,0 +1,23 @@
+{
+  "name": "vue-ipfs-gateway",
+  "version": "0.1.0",
+  "description": "A Vue helper for fetch and display IPFs content using public gateways.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/filipesoccol/vue-ipfs-gateway.git"
+  },
+  "keywords": [
+    "ipfs",
+    "vue"
+  ],
+  "author": "@filipesoccol",
+  "license": "MIT",
+  "dependencies": {
+    "is-ipfs": "^7.0.2",
+    "vue": "^3.2.39"
+  }
+}
