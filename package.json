@@ -1,5 +1,5 @@
 {
-  "name": "vue-ipfs-gateway",
+  "name": "vue-ipfs-components",
   "version": "0.1.0",
   "description": "A Vue helper for fetch and display IPFs content using public gateways.",
   "main": "index.js",
