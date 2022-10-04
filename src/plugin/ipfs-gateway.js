@@ -2,6 +2,7 @@ import IPFSMedia from "../components/ipfs-media.vue";
 import IPFSAvatar from "../components/ipfs-avatar.vue";
 import IPFSSquared from "../components/ipfs-squared.vue";
 import * as isIPFS from 'is-ipfs';
+import domains from './domains.js'
 
 /**
  * Creates the IPFS Gateway Plugin instance
@@ -18,33 +19,33 @@ const IPFSGatewayPlugin = {
   // True when sucessfully connected with at least two gateways
   let ipfsConnected = false
   console.log('-- IPFS Starting connection process --')
-  fetch('https://raw.githubusercontent.com/ipfs/public-gateway-checker/master/src/gateways.json')
-  .then( r => r.json())
-  .then( json => {
-    json.forEach( gatewayPath => {
-      const dateBefore = Date.now()
-      Promise.race([
-        fetch(gatewayPath.replace(':hash', 'bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m'), {timeout:500, mode:'cors'}),
-        new Promise( (resolve, reject) => { setTimeout(reject, 500) })
-      ]).then( (response) => {
-        if (response.status >= 200 && response.status <= 299) {
-          return response.text();
-        } else {
-          throw Error(response.statusText);
-        }
-      })
-      .then( () => {
-        gatewaysFetched = gatewaysFetched.concat({path: gatewayPath, errors:0, response:Date.now() - dateBefore})
-        .sort((a,b) => a.response - b.response)
-
-        if (gatewaysFetched.length > 3 && !ipfsConnected) {
-          console.log('-- IPFS Connected to enough gateways --')
-          ipfsConnected = true
-        }
-      })
-      .catch( () => {})
+  // fetch(domains)
+  // .then( r => r.json())
+  // .then( json => {
+  domains.forEach( gatewayPath => {
+    const dateBefore = Date.now()
+    Promise.race([
+      fetch(gatewayPath.replace(':hash', 'bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m'), {timeout:500, mode:'cors'}),
+      new Promise( (resolve, reject) => { setTimeout(reject, 500) })
+    ]).then( (response) => {
+      if (response.status >= 200 && response.status <= 299) {
+        return response.text();
+      } else {
+        throw Error(response.statusText);
+      }
     })
+    .then( () => {
+      gatewaysFetched = gatewaysFetched.concat({path: gatewayPath, errors:0, response:Date.now() - dateBefore})
+      .sort((a,b) => a.response - b.response)
+
+      if (gatewaysFetched.length > 3 && !ipfsConnected) {
+        console.log('-- IPFS Connected to enough gateways --')
+        ipfsConnected = true
+      }
+    })
+    .catch( () => {})
   })
+  // })
 
   const digestPath = (url) => {
     let path = ''
@@ -55,7 +56,6 @@ const IPFSGatewayPlugin = {
       // If is a IPFS protocol address
       // ipfs://QmXNwZhBAG9Pw9nBAHGrKMe56U6Vz9K7SxX4Tbcksp6Fsn/121.gif
       if (urlObject.protocol == 'ipfs:') {
-        console.log(urlObject.host+urlObject.pathname)
         path = url.substring(7)
       // If it is a base32 subdomain path
       // https://bafybeiegj5togigbqpycmqqcdnoiutvrxg377xxdjkmcdzkd74eqobetwe.ipfs.w3s.link/121.gif
@@ -70,7 +70,6 @@ const IPFSGatewayPlugin = {
       path = url
     }
     
-    console.log('One of the three:', path , isIPFS.ipfsPath(path), isIPFS.cidPath(path), isIPFS.cid(path))
     // https://github.com/ipfs-shipyard/is-ipfs
     // In case of a path starting with /ipfs/Qm.... remove the /ipfs
     if (isIPFS.ipfsPath(path)) return path.substring(6)

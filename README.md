@@ -37,7 +37,6 @@ You could use full IPFS URLs or only CIDs:
 - [x] Grab the CID and Subpath from IPFS protocol links
 - [x] Grabs the CID and the Subpath from a full link
 - [x] Grabs the CID and the Subpath on CidV1 domain paths
-- [ ] Use a Service Worker for fetch gateways list
 - [ ] Documentation
 - [ ] Installation Instruction
 - [ ] How to use Instructions
