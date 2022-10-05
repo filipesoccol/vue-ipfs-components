@@ -20,12 +20,27 @@ export default {
   props: ['src'],
   async mounted() {
     if (this.src) {
-      this.finalSrc = await this.fetchImage(this.src)
+      this.tryFetchMedia(this.src)
     }
   },
   watch: {
     async src(newSrc) {
-      this.finalSrc = await this.fetchImage(newSrc)
+      this.tryFetchMedia(newSrc)
+    }
+  },
+  methods: {
+    async tryFetchMedia(src) {
+      try {
+        const result = await Promise.race([
+          this.fetchImage(src),
+          new Promise( (resolve, reject) => {
+            setTimeout(reject, 5000);
+          })
+        ])
+        this.finalSrc = result
+      } catch (err) {
+        this.tryFetchMedia(src)
+      }
     }
   }
 }

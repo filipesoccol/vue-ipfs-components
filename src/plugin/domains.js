@@ -8,6 +8,5 @@ export default [
 	"https://ipfs-gateway.cloud/ipfs/:hash",
 	"https://w3s.link/ipfs/:hash",
 	"https://hardbin.com/ipfs/:hash",
-	"https://via0.com/ipfs/:hash",
 	"https://ipfs.eth.aragon.network/ipfs/:hash",
 ]

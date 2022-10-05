@@ -26,7 +26,7 @@ const IPFSGatewayPlugin = {
     const dateBefore = Date.now()
     Promise.race([
       fetch(gatewayPath.replace(':hash', 'bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m'), {timeout:500, mode:'cors'}),
-      new Promise( (resolve, reject) => { setTimeout(reject, 500) })
+      new Promise( (resolve, reject) => { setTimeout(reject, 5000) })
     ]).then( (response) => {
       if (response.status >= 200 && response.status <= 299) {
         return response.text();
@@ -37,13 +37,15 @@ const IPFSGatewayPlugin = {
     .then( () => {
       gatewaysFetched = gatewaysFetched.concat({path: gatewayPath, errors:0, response:Date.now() - dateBefore})
       .sort((a,b) => a.response - b.response)
-
+      console.log('Gateway connected: ', gatewayPath)
       if (gatewaysFetched.length > 3 && !ipfsConnected) {
         console.log('-- IPFS Connected to enough gateways --')
         ipfsConnected = true
       }
     })
-    .catch( () => {})
+    .catch( (err) => {
+      console.log(err)
+    })
   })
   // })
 
@@ -78,7 +80,6 @@ const IPFSGatewayPlugin = {
     // In case of cid
     if (isIPFS.cid(path)) return path
     // In case of none of the above, fail.
-
 
     throw new Error('Not a valid IPFS URL')
   }
