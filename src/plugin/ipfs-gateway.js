@@ -44,7 +44,7 @@ const IPFSGatewayPlugin = {
       }
     })
     .catch( (err) => {
-      console.log(err)
+      console.log('Failed to fetch gateway.')
     })
   })
   // })
@@ -97,20 +97,21 @@ const IPFSGatewayPlugin = {
       })
     }
     await new Promise( resolve => { waitLoop(resolve) })
-    return await Promise.race(
-      gatewaysFetched.slice(0,3).map( (g) => {
-        return new Promise( (resolve,reject) => {
-          fetch(g.path.replace(':hash', digested), {mode: 'cors'})
-          .then( (r) => r.json())
-          .then( doc => resolve(doc))
-          .catch( () => {
-            g.errors++
-            if (g.errors > 3) gatewaysFetched.splice(gatewaysFetched.indexOf(g), 1)
-            reject()
-          })
-        })
-      })
-    )
+    // return await Promise.race(
+    //   gatewaysFetched.slice(0,3).map( (g) => {
+    //     return new Promise( (resolve,reject) => {
+    //       fetch(g.path.replace(':hash', digested), {mode: 'cors'})
+    //       .then( (r) => r.json())
+    //       .then( doc => resolve(doc))
+    //       .catch( () => {
+    //         g.errors++
+    //         if (g.errors > 3) gatewaysFetched.splice(gatewaysFetched.indexOf(g), 1)
+    //         reject()
+    //       })
+    //     })
+    //   })
+    // )
+    return await persistentFetch(digested, path, 'json') 
   }
 
   const fetchImage = async (path) => {
@@ -118,25 +119,82 @@ const IPFSGatewayPlugin = {
     try { digested = digestPath(path) }
     catch {
       // In case of fail to digest use same path to fetch
+      console.log('Not an IPFS valid path:', path)
       return path
     }
+    // Wait connection to be completed before try to fetch 
     await new Promise( resolve => { waitLoop(resolve) })
-    return await Promise.race(
-      gatewaysFetched.slice(0,3).map( (g) => {
-        return new Promise( (resolve,reject) => {
-          fetch(g.path.replace(':hash', digested), {mode: 'cors'})
-          .then( (r) => {
-            if (r.ok) resolve(g.path.replace(':hash', digested))
-            throw new Error('Error fetching image')
-          })
-          .catch( () => {
-            g.errors++
-            if (g.errors > 3) gatewaysFetched.splice(gatewaysFetched.indexOf(g), 1)
-            reject()
-          })
-        })
+    return await persistentFetch(digested, path, 'path')
+  }
+
+  const persistentFetch = async (digested, path, type) => {
+    let tries = 0;
+    let found = undefined;
+    while(!found && tries < 5){
+      // Controls Fetch for abort in case of failure or success
+      const controllers = [new AbortController(), new AbortController(), new AbortController()];
+      // Se a timeout for retry
+      let timeout
+      // Racing the promises for tries
+      await Promise.race(
+        // Grab the first 3 best gateways
+        gatewaysFetched.slice(0,3).map( (gateway, idx) => {
+          if (type == 'path') return resolvePath(gateway, digested, controllers, idx)
+          if (type == 'json') return resolveJson(gateway, digested, controllers, idx)
+        }).concat(new Promise((resolve) => {
+          timeout = setTimeout(() => resolve(), 5000)
+        }))
+      ).then( (res) => {
+        clearTimeout(timeout);
+        controllers.forEach( (c, idx) => { if(idx != res.idx) c.abort(); })
+        if (res.value) found = res.value;
+      }).catch(() => {
+        clearTimeout(timeout);
+        controllers.forEach( (c) => c.abort())
       })
-    )
+    }
+    if (found) return found
+    return path
+  }
+
+  const resolvePath = (gateway, digested, controllers, idx) => {
+    return new Promise( (resolve,reject) => {
+      // Fetch digested path from best gateways
+      fetch(gateway.path.replace(':hash', digested), {signal: controllers[idx].signal})
+      .then( (r) => {
+        // If fetched return as soon as possible
+        if (r.ok) {
+          resolve({value: gateway.path.replace(':hash', digested), idx})
+        }
+        throw new Error('Error fetching image')
+      })
+      .catch( () => {
+        gateway.errors++
+        if (gateway.errors > 3) gatewaysFetched.splice(gatewaysFetched.indexOf(gateway), 1)
+        reject()
+      })
+    })
+  }
+
+  const resolveJson = (gateway, digested, controllers, idx) => {
+    return new Promise( (resolve,reject) => {
+      // Fetch digested path from best gateways
+      fetch(gateway.path.replace(':hash', digested), {signal: controllers[idx].signal})
+      // .then( (r) => {
+      //   // If fetched return as soon as possible
+      //   if (r.ok) {
+      //     resolve({path: gateway.path.replace(':hash', digested), idx})
+      //   }
+      //   throw new Error('Error fetching image')
+      // })
+      .then( (r) => r.json())
+      .then( json => resolve({value:json, idx}))
+      .catch( () => {
+        gateway.errors++
+        if (gateway.errors > 3) gatewaysFetched.splice(gatewaysFetched.indexOf(gateway), 1)
+        reject()
+      })
+    })
   }
 
   const waitLoop = (callback) => {

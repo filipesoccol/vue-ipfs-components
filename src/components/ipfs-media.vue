@@ -20,26 +20,23 @@ export default {
   props: ['src'],
   async mounted() {
     if (this.src) {
+      console.log('PREDEFINED MEDIA')
       this.tryFetchMedia(this.src)
     }
   },
   watch: {
-    async src(newSrc) {
+    src(newSrc) {
+      console.log('CHANGED MEDIA')
       this.tryFetchMedia(newSrc)
     }
   },
   methods: {
     async tryFetchMedia(src) {
       try {
-        const result = await Promise.race([
-          this.fetchImage(src),
-          new Promise( (resolve, reject) => {
-            setTimeout(reject, 5000);
-          })
-        ])
+        const result = await this.fetchImage(src)
         this.finalSrc = result
       } catch (err) {
-        this.tryFetchMedia(src)
+        console.log('Not Able to load Image', err)
       }
     }
   }
