@@ -28,7 +28,7 @@ const IPFSGatewayPlugin = {
       fetch(gatewayPath.replace(':hash', 'bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m'), {timeout:500, mode:'cors'}),
       new Promise( (resolve, reject) => { setTimeout(reject, 5000) })
     ]).then( (response) => {
-      if (response.status >= 200 && response.status <= 299) {
+      if (response.ok) {
         return response.text();
       } else {
         throw Error(response.statusText);
@@ -130,11 +130,12 @@ const IPFSGatewayPlugin = {
   const persistentFetch = async (digested, path, type) => {
     let tries = 0;
     let found = undefined;
-    while(!found && tries < 5){
+    while(!found && tries < 20){
       // Controls Fetch for abort in case of failure or success
       const controllers = [new AbortController(), new AbortController(), new AbortController()];
       // Se a timeout for retry
       let timeout
+
       // Racing the promises for tries
       await Promise.race(
         // Grab the first 3 best gateways
@@ -152,6 +153,7 @@ const IPFSGatewayPlugin = {
         clearTimeout(timeout);
         controllers.forEach( (c) => c.abort())
       })
+      if (!found) tries ++
     }
     if (found) return found
     return path
@@ -168,9 +170,11 @@ const IPFSGatewayPlugin = {
         }
         throw new Error('Error fetching image')
       })
-      .catch( () => {
-        gateway.errors++
-        if (gateway.errors > 3) gatewaysFetched.splice(gatewaysFetched.indexOf(gateway), 1)
+      .catch( (err) => {
+        if (err.code && err.code != 20){
+          gateway.errors++
+          if (gateway.errors > 3) gatewaysFetched.splice(gatewaysFetched.indexOf(gateway), 1)
+        }
         reject()
       })
     })
