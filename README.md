@@ -11,32 +11,55 @@ This component will help to fetch media from IPFS without needing to set or conf
 
 The service to fetch Images and JSON(Metadata) files work decoupling the URL/CID/Path passed ad check if is a valid IPFS link. In case of succeded fetch for CID and subpaths, it uses the better gateway possible to fetch content. In case of succeded feching from one of the best gateways it returns immediatelly. Otherwise it will fallback to the URL previously passed.
 
-Sources for media supported includes:
+[Live Demo](https://filipesoccol.github.io/vue-ipfs-components-demo/) / [Live Demo Repo](https://github.com/filipesoccol/vue-ipfs-components-demo)
 
-Single CIDv0 or CIDv1: QmPbxeGcXhYQ...LnGKnF8pVFmGsvqi
-CIDv0 or CIDv1 with subpath: bafybeibj6paz...hov73vacgiqowpsxwrry4fnxq/1.png
-IPFS protocol path: ipfs://QmTDxnzcvj2p3...An2yzCQnZZ9LmFjReuH9/
-Gateway path (will be replaced by most suitable): https://ipfs.io/ipfs/bafybeibj6pazf....iqowpsxwrry4fnxq/1.png
-CIDv1 subdomain and Gateway(will also be replaced): https://bafybeiaewpy...57pr5z3kyag62kfuc7a.ipfs.dweb.link/2.png
-You can even pass normal URLs withou any reference to IPFS, they will not be changed and will fetch correct path.
+## Sources for media supported includes:
 
-You could use full IPFS URLs or only CIDs:
+- [x] Path with CIDv0 only: Qm...
+- [x] Path with CIDv1 only: bafy...
+- [x] IPFS protocol path: ipfs://...
+- [x] Pre-filled IPFS gateway path: https://ipfs.io/ipfs/...
+- [x] CIDv1 with subdomain path: https://bafy.../2.png
+- [x] Non IPFS URLs (Will fetch url itself.)
+
+## Installation
+
+First install package on your project:
 ```
-<ipfs-img src="https://ipfs.io/ipfs/bafybeibaq3546276fsv6qh3ymo57yva6dygsmeukzo2xy5tlkfywl7khdy/derp.png"/>
-<ipfs-img src="bafybeibaq3546276fsv6qh3ymo57yva6dygsmeukzo2xy5tlkfywl7khdy/derp.png"/>
+npm install -s vue-ipfs-components
 ```
 
-### ROADMAP:
+Then use package on your Vue constructor:
+```
+import VueIPFS from 'vue-ipfs-components'
 
-- [x] Grab multiple gateways from public-gateways repository. [Repo](https://github.com/ipfs/public-gateway-checker/blob/master/src/gateways.json)
-- [x] Test what is the response time for each Gateway
-- [x] Create a function to fetch JSON/Metadata documents 
-- [x] Create a component for fetch images using a loading placeholder
-- [x] Detects when URL is only a CID
-- [x] Detects when URL is a CID and a Subpath
-- [x] Grab the CID and Subpath from IPFS protocol links
-- [x] Grabs the CID and the Subpath from a full link
-- [x] Grabs the CID and the Subpath on CidV1 domain paths
-- [ ] Documentation
-- [ ] Installation Instruction
-- [ ] How to use Instructions
+createApp(App).use(VueIPFS).mount('#app')
+```
+
+## Usage
+
+We feature two different components with preload:
+
+**ipfs-avatar**: A component that has two different properties. 
+
+- size: The size of the image in pixels.
+- radius: The border radius of the image. 
+```
+<ipfs-avatar size="20" radius="20" src="path or cid"/>
+<ipfs-avatar size="100" radius="0" src="path or cid"/>
+```
+
+**ipfs-squared**: A component that has two different properties. 
+
+- width: The width of the image in pixels.
+- height: The height of the image in pixels. 
+```
+<ipfs-squared width="20" height="20" src="path or cid"/>
+<ipfs-squared width="100" height="300" src="path or cid"/>
+```
+
+Both are extending the thid component called **ipfs-media**, if you want to customize an implementation, you can extend **ipfs-media** same way **ipfs-squared** and **ipfs-avatar** does with the desired modifications. **ipfs-media** will deal with comunication with the component core, while you just deal with how you will display the object.
+
+## References:
+
+- Protocol-Labs public gateway list: [Website](https://ipfs.github.io/public-gateway-checker/) / [Repo](https://github.com/ipfs/public-gateway-checker/blob/master/src/gateways.json)

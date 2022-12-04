@@ -1,7 +1,7 @@
 {
   "name": "vue-ipfs-components",
-  "version": "0.1.2",
-  "description": "A Vue helper for fetch and display IPFs content using public gateways.",
+  "version": "0.1.3",
+  "description": "Vue components for fetch and display IPFS content using public gateways.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
