@@ -8,8 +8,8 @@ import { inject } from 'vue'
 
 export default {
   setup() {
-    const fetchImage = inject('fetchImage')
-    return { fetchImage }
+    const fetchContent = inject('fetchContent')
+    return { fetchContent }
   },
   name: 'IPFSMedia',
   data() {
@@ -20,20 +20,18 @@ export default {
   props: ['src'],
   async mounted() {
     if (this.src) {
-      console.log('PREDEFINED MEDIA')
       this.tryFetchMedia(this.src)
     }
   },
   watch: {
     src(newSrc) {
-      console.log('CHANGED MEDIA')
       this.tryFetchMedia(newSrc)
     }
   },
   methods: {
     async tryFetchMedia(src) {
       try {
-        const result = await this.fetchImage(src)
+        const result = await this.fetchContent(src)
         this.finalSrc = result
       } catch (err) {
         console.log('Not Able to load Image', err)
