@@ -1,5 +1,10 @@
-# Vue IPFS Components
-![vue-ipfs-components-logo](https://bafybeih2qkxommebznq6zavgqltidbmszz5j6tssoq75coj2yjg554mldm.ipfs.w3s.link/ipfs.png)
+<p align="center">
+  <a href="https://filipesoccol.github.io/vue-ipfs-components-demo/" title="Vue IPFS Components">
+    <img src="https://bafybeih5ekofdyjj3go7h2bhbrsvfo2n3zwhmj53vrmpv4ilqtkksd6s4u.ipfs.w3s.link/logo_ipfs_vue.svg" alt="IPFS logo" width="244" />
+  </a>
+</p>
+
+<h3 align="center">Vue IPFS Components</h3>
 
 ### Load any IPFS content from the fastest gateway available just passing a valid path.
 
@@ -61,5 +66,7 @@ We feature two different components with preload:
 Both are extending the thid component called **ipfs-media**, if you want to customize an implementation, you can extend **ipfs-media** same way **ipfs-squared** and **ipfs-avatar** does with the desired modifications. **ipfs-media** will deal with comunication with the component core, while you just deal with how you will display the object.
 
 ## References:
+
+- IPFS Public Fetcher Library - [Repo](https://github.com/filipesoccol/ipfs-public-fetcher)
 
 - Protocol-Labs public gateway list: [Website](https://ipfs.github.io/public-gateway-checker/) / [Repo](https://github.com/ipfs/public-gateway-checker/blob/master/src/gateways.json)

@@ -1,6 +1,6 @@
 {
   "name": "vue-ipfs-components",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Vue components for fetch and display IPFS content using public gateways.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/filipesoccol/vue-ipfs-gateway.git"
+    "url": "git+https://github.com/filipesoccol/vue-ipfs-components.git"
   },
   "keywords": [
     "ipfs",
