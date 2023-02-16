@@ -14,7 +14,7 @@ const IPFSGatewayPlugin = {
   Vue.component("ipfs-avatar", IPFSAvatar);
   Vue.component("ipfs-squared", IPFSSquared);
 
-  IPFSFetcher.Initialize()
+  IPFSFetcher.Initialize(options)
 
   Vue.provide('fetchJSON', IPFSFetcher.FetchJSON)
   Vue.provide('fetchContent', IPFSFetcher.FetchContent)

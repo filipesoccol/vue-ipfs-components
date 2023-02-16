@@ -1,6 +1,6 @@
 {
   "name": "vue-ipfs-components",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Vue components for fetch and display IPFS content using public gateways.",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   "author": "@filipesoccol",
   "license": "MIT",
   "dependencies": {
-    "ipfs-public-fetcher": "^0.1.4",
+    "ipfs-public-fetcher": "^0.1.5",
     "vue": "^3.2.39"
   }
 }
