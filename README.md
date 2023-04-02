@@ -54,16 +54,29 @@ We feature two different components with preload:
 <ipfs-avatar size="100" radius="0" src="path or cid"/>
 ```
 
-**ipfs-squared**: A component that has two different properties. 
+**ipfs-image**: A component that has two different properties. 
 
 - width: The width of the image in pixels.
 - height: The height of the image in pixels. 
 ```
-<ipfs-squared width="20" height="20" src="path or cid"/>
-<ipfs-squared width="100" height="300" src="path or cid"/>
+<ipfs-image width="20" height="20" src="path or cid"/>
+<ipfs-image width="100" height="300" src="path or cid"/>
 ```
 
-Both are extending the thid component called **ipfs-media**, if you want to customize an implementation, you can extend **ipfs-media** same way **ipfs-squared** and **ipfs-avatar** does with the desired modifications. **ipfs-media** will deal with comunication with the component core, while you just deal with how you will display the object.
+**ipfs-video**: A component that renders video tag and has two different properties. 
+
+- width: The width of the video in pixels.
+- height: The height of the video in pixels. 
+- controls: Show video controls to play/pause/mute/fullscreen 
+- muted: Video muted by default (required for autoplay feature)
+- loop: Loop video
+- autoplay: Autoplay video once loaded
+```
+<ipfs-video width="20" height="20" src="path or cid"/>
+<ipfs-video width="100" height="300" src="path or cid"/>
+```
+
+Both are extending the thid component called **ipfs-media**, if you want to customize an implementation, you can extend **ipfs-media** same way **ipfs-image**, **ipfs-avatar**  and **ipfs-video** does with the desired modifications. **ipfs-media** will deal with comunication with the component core, while you just deal with how you will display the object.
 
 ## References:
 

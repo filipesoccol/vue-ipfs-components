@@ -1,7 +1,8 @@
 import IPFSMedia from "../components/ipfs-media.vue";
 import IPFSAvatar from "../components/ipfs-avatar.vue";
-import IPFSSquared from "../components/ipfs-squared.vue";
-import IPFSFetcher from "ipfs-public-fetcher";
+import IPFSImage from "../components/ipfs-image.vue";
+import IPFSVideo from "../components/ipfs-video.vue";
+import {Initialize, FetchContent, FetchJSON} from "ipfs-public-fetcher";
 
 /**
  * Creates the IPFS Gateway Plugin instance
@@ -12,12 +13,13 @@ const IPFSGatewayPlugin = {
   // https://vuejs.org/v2/guide/components-registration.html
   Vue.component("ipfs-media", IPFSMedia);
   Vue.component("ipfs-avatar", IPFSAvatar);
-  Vue.component("ipfs-squared", IPFSSquared);
+  Vue.component("ipfs-image", IPFSImage);
+  Vue.component("ipfs-video", IPFSVideo);
 
-  IPFSFetcher.Initialize(options)
+  Initialize(options)
 
-  Vue.provide('fetchJSON', IPFSFetcher.FetchJSON)
-  Vue.provide('fetchContent', IPFSFetcher.FetchContent)
+  Vue.provide('fetchJSON', FetchJSON)
+  Vue.provide('fetchContent', FetchContent)
  }
 };
 

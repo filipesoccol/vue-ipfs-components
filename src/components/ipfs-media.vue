@@ -1,6 +1,12 @@
 <template>
-  <slot name="media" v-if="finalSrc" :ipfsFinal="finalSrc"/>
-  <slot name="placeholder" v-if="!finalSrc"/>
+  <slot 
+    name="media" 
+    v-if="finalSrc"
+    :ipfsFinal="finalSrc"
+    :handleError="handleError"
+    :handleLoaded="handleLoaded"
+  />
+  <slot name="placeholder" v-if="!loaded"/>
 </template>
 
 <script>
@@ -15,6 +21,7 @@ export default {
   data() {
     return {
       finalSrc: '',
+      loaded: false,
     }
   },
   props: ['src'],
@@ -36,7 +43,14 @@ export default {
       } catch (err) {
         console.log('Not Able to load Image', err)
       }
-    }
+    },
+    handleLoaded() {
+      this.loaded = true
+    },
+    handleError() {
+      console.log('Error loading media returned by fetcher')
+      this.tryFetchMedia(src)
+    },
   }
 }
 </script>

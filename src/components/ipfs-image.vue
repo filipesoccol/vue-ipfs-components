@@ -3,15 +3,15 @@
 
     defineProps({
         src: String,
-        size: Number,
-        radius: Number
+        width: Number,
+        height: Number
     })
 </script>
 
 <template>
     <div class="ipfs-wrapper" :style="{
-        width: `${size}px`,
-        height: `${size}px`,
+        width: `${width}px`,
+        height: `${height}px`,
     }">
         <ipfs-media :src="src">
             <template #media="props">
@@ -21,17 +21,15 @@
                     @error="props.handleError"
                     @load="props.handleLoaded"
                     :style="{
-                        width: size+'px',
-                        height: size+'px',
-                        'border-radius':radius+'px'
-                    }"
-                />
+                        width: width+'px',
+                        height: height+'px'
+                    }
+                "/>
             </template>
             <template #placeholder>
                 <div class="ipfs-placeholder" :style="{ 
-                    width: size+'px',
-                    height: size+'px',
-                    'border-radius':radius+'px'
+                    width: width+'px',
+                    height: height+'px'
                 }"/>
             </template>
         </ipfs-media>
